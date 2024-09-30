@@ -1,0 +1,20 @@
+#root {
+  max-width: 1280px;
+  margin: 0;
+  padding: 2rem;
+  text-align: center;
+}
+
+.read-the-docs {
+  color: #888;
+}
+
+
+.main-container{
+  margin: 1rem;
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
