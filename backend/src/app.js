@@ -1,68 +1,159 @@
-import 'dotenv/config'; // Cargar las variables del archivo .env
+import 'dotenv/config';
 import express from 'express';
-import multer from 'multer';
-import { SpeechClient } from '@google-cloud/speech';
-import fs from 'fs';
-import cors from 'cors'
-import 'dotenv/config'
-// Configurar CORS para permitir solo la dirección específica
-const corsOptions = {
-    origin: process.env.LOCAL_URL, // Especifica el origen permitido
-    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE', // Métodos permitidos
-    credentials: true, // Si necesitas habilitar credenciales
-};
 
-// Usar cors con la configuración especificada
-app.use(cors(corsOptions));
+import cors from 'cors';
+
+
+// Configurar CORS
+const corsOptions = {
+    origin: process.env.LOCAL_URL,
+    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+    credentials: true,
+};
 
 const app = express();
-const upload = multer({ dest: 'uploads/' }); // Almacena los archivos temporalmente en 'uploads'
-const client = new SpeechClient(); // Este cliente usará la credencial
 
-app.post('/api/upload-audio', upload.single('audio'), async (req, res) => {
-    const audioFilePath = req.file.path;
 
-    console.log("audiofile", audioFilePath)
+app.use(express.json());
 
-    // Leer el archivo de audio
-    const audioBuffer = fs.readFileSync(audioFilePath);
+// Usar CORS
+app.use(cors(corsOptions));
 
-    console.log("audiobuffer", audioBuffer)
+// Endpoint de prueba
+app.get('/prueba', (req, res) => res.json({ ok: "ok" }));
 
-    // Llamar a la función de Google Cloud Speech para transcribir
-    const transcription = await recognizeSpeech(audioBuffer);
+app.post('/api/check-transcription', (req, res) => {
+    const { transcription } = req.body;
 
-    console.log("transcripcion", transcription)
+    if (!transcription) {
+        return res.status(400).json({ message: 'Transcripción faltante' });
+    }
 
-    // Comparar la transcripción con el texto almacenado
-    const juramentoTexto = 'prueba de juramento'; // Cambia esto por el texto real del juramento
-    const coincidencia = transcription.trim() === juramentoTexto.trim();
+    // Aquí puedes comparar la transcripción con el juramento almacenado
+    const juramentoAlmacenado = "Always.";
+    const coincidencia = transcription.trim().toLowerCase() === juramentoAlmacenado.trim().toLowerCase();
 
-    console.log("coincidencia", coincidencia)
-
-    // Responder al frontend con la transcripción y la coincidencia
-    res.json({ transcription, coincidencia });
-
-    // Eliminar el archivo de audio temporal después de procesar
-    fs.unlinkSync(audioFilePath);
+    res.json({ coincidencia });
 });
 
-// Función para transcribir el audio
-const recognizeSpeech = async (audioBuffer) => {
-    const audio = {
-        content: audioBuffer.toString('base64'),
-    };
-    const config = {
-        encoding: 'LINEAR16',
-        sampleRateHertz: 16000,
-        languageCode: 'es-ES', // Ajusta según el idioma
-    };
-    const request = { audio, config };
 
-    const [response] = await client.recognize(request);
-    return response.results.map(result => result.alternatives[0].transcript).join('\n');
-};
 
-app.listen(5000, () => {
-    console.log('Servidor escuchando en puerto 5000');
-});
+// Inicializar el servidor
+app.listen(5000, () => console.log('Servidor escuchando en puerto 5000'));
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// import 'dotenv/config';
+// import express from 'express';
+// import multer from 'multer';
+// import { SpeechClient } from '@google-cloud/speech';
+// import fs from 'fs/promises'; // Cambia a fs/promises
+// import cors from 'cors';
+// import { GoogleAuth } from 'google-auth-library';
+// import { exec } from 'child_process';
+// import path from 'path';
+// import ffmpegPath from 'ffmpeg-static';
+
+// // Configurar CORS
+// const corsOptions = {
+//     origin: process.env.LOCAL_URL,
+//     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+//     credentials: true,
+// };
+
+// const app = express();
+// const upload = multer({
+//     dest: 'uploads/',
+//     fileFilter: (req, file, cb) => {
+//         const filetypes = /wav|mp3|ogg|flac|aac|webm/;
+//         const isValid = filetypes.test(file.mimetype) && filetypes.test(path.extname(file.originalname).toLowerCase());
+//         cb(isValid ? null : new Error('Error: Tipo de archivo no permitido'));
+//     }
+// });
+
+// const auth = new GoogleAuth({
+//     credentials: JSON.parse(process.env.GOOGLE_APPLICATION_CREDENTIALS),
+//     scopes: 'https://www.googleapis.com/auth/cloud-platform',
+// });
+
+// const client = new SpeechClient({ auth });
+
+// // Usar CORS
+// app.use(cors(corsOptions));
+
+// // Endpoint de prueba
+// app.get('/prueba', (req, res) => res.json({ ok: "ok" }));
+
+// // Endpoint para subir el audio
+// app.post('/api/upload-audio', upload.single('audio'), async (req, res) => {
+//     const audioFilePath = req.file.path;
+
+//     try {
+//         const wavFilePath = await convertToWav(audioFilePath);
+//         const audioBuffer = await fs.readFile(wavFilePath);
+//         const transcription = await recognizeSpeech(audioBuffer);
+
+//         const juramentoTexto = 'prueba de juramento';
+//         const coincidencia = transcription.trim() === juramentoTexto.trim();
+
+//         res.json({ transcription, coincidencia });
+//     } catch (error) {
+//         console.error("Error procesando el audio:", error);
+//         res.status(500).json({ error: "Error al procesar el audio" });
+//     } finally {
+//         try {
+//             await fs.unlink(audioFilePath);
+//             await fs.unlink(wavFilePath);
+//         } catch (err) {
+//             console.error("Error al eliminar archivos temporales:", err);
+//         }
+//     }
+// });
+
+// // Función para convertir el archivo a WAV
+// const convertToWav = (inputFilePath) => {
+//     return new Promise((resolve, reject) => {
+//         const outputFilePath = path.join(path.dirname(inputFilePath), `${path.basename(inputFilePath, path.extname(inputFilePath))}.wav`);
+//         const command = `"${ffmpegPath}" -i "${inputFilePath}" -acodec pcm_s16le -ar 16000 "${outputFilePath}"`;
+
+//         exec(command, (error, stdout, stderr) => {
+//             if (error) return reject(`Error durante la conversión: ${error.message}`);
+//             if (stderr) console.error(`FFmpeg stderr: ${stderr}`);
+//             console.log(`Conversión exitosa: ${outputFilePath}`);
+//             resolve(outputFilePath);
+//         });
+//     });
+// };
+
+// // Función para transcribir el audio
+// const recognizeSpeech = async (audioBuffer) => {
+//     const audio = { content: audioBuffer.toString('base64') };
+//     const config = { encoding: 'LINEAR16', sampleRateHertz: 16000, languageCode: 'es-ES' };
+//     const request = { audio, config };
+
+//     try {
+//         const [response] = await client.recognize(request);
+//         return response.results.map(result => result.alternatives[0].transcript).join('\n');
+//     } catch (error) {
+//         console.error("Error en la transcripción:", error);
+//         throw error;
+//     }
+// };
+
+// // Inicializar el servidor
+// app.listen(5000, () => console.log('Servidor escuchando en puerto 5000'));
