@@ -1,17 +1,43 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import './audiorecorder.css';
 
 const URLWEB = import.meta.env.VITE_REACT_APP_MODE === 'DEV'
   ? import.meta.env.VITE_REACT_APP_LOCAL_URL
   : import.meta.env.VITE_REACT_APP_WEB_URL;
 
-
 const AudioRecorder = () => {
   const [transcription, setTranscription] = useState('');
   const [coincidencia, setCoincidencia] = useState();
   const [isRecording, setIsRecording] = useState(false);
-  const [mostrarPoema, setMostrarPoema] = useState('')
+  const [mostrarPoema, setMostrarPoema] = useState(''); // Texto mostrado progresivamente
+  const [mostrarContenedor, setMostrarContenedor] = useState(false); // Estado para controlar la visibilidad del contenedor
 
+  const lineasPoema = [
+    "A veces, cuando me miras,",
+    "siento que el mundo se detiene.",
+    "Hay algo en tus ojos que me atrapa,",
+    "una luz que solo tú enciendes.",
+    "",
+    "Tus palabras, esos pequeños halagos,",
+    "me hacen sentir especial y querido.",
+    "Es raro ponerlo en palabras,",
+    "pero me haces sentir muy afortunado.",
+    "",
+    "Me encanta que me veas así,",
+    "como alguien lindo y valioso.",
+    "Cada beso tuyo me llena de alegría,",
+    "y me hace querer más de este hermoso camino.",
+    "",
+    "Quiero compartir contigo todos mis sueños,",
+    "crear un futuro a tu lado,",
+    "ser la única persona en tu vida,",
+    "hasta el día en que ya no esté a tu lado.",
+    "",
+    "Así que aquí estoy, prometiendo,",
+    "ser tu compañero en cada aventura.",
+    "Contigo, cada día es un regalo,",
+    "y te amo más de lo que puedo decir."
+  ].join(' '); // Concatenamos todas las líneas
 
   let recognition;
   const speechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
@@ -26,7 +52,7 @@ const AudioRecorder = () => {
   }
 
   const startRecording = async () => {
-    if (isRecording) return; // Evitar múltiples grabaciones simultáneas
+    if (isRecording) return;
     setIsRecording(true);
 
     try {
@@ -35,13 +61,12 @@ const AudioRecorder = () => {
       console.error('Error al acceder al micrófono:', error);
       alert('No se pudo acceder al micrófono. Verifica los permisos.');
       setIsRecording(false);
-
     }
   };
 
   const stopRecording = () => {
     if (!isRecording) return;
-    recognition.stop(); // Usar stop en lugar de abort para finalizar correctamente
+    recognition.stop();
     setIsRecording(false);
   };
 
@@ -59,7 +84,6 @@ const AudioRecorder = () => {
       return;
     }
 
-
     try {
       const response = await fetch(`${URLWEB}/api/check-transcription`, {
         method: 'POST',
@@ -75,27 +99,26 @@ const AudioRecorder = () => {
 
       const result = await response.json();
       setCoincidencia(result.coincidencia);
+
+      if (result.coincidencia) {
+        setMostrarContenedor(true); // Hacemos visible el contenedor
+        mostrarPoemaProgresivamente(lineasPoema); // Mostramos el poema progresivamente
+      }
     } catch (error) {
       console.error('Error al enviar la transcripción:', error);
     }
   };
 
-
-  useEffect(() => {
-    if (coincidencia) {
-      const poema = " A veces, cuando me miras, siento que el mundo se detiene, hay algo en tus ojos que me atrapa; tus palabras, esos pequeños halagos, me hacen sentir especial y querido, es raro ponerlo en palabras, pero me haces sentir muy afortunado; me encanta que me veas así, como alguien lindo y valioso, cada beso tuyo me llena de alegría y me hace querer más de este hermoso camino; quiero compartir contigo todos mis sueños, crear un futuro a tu lado, ser la única persona en tu vida, hasta el día en que ya no esté a tu lado, así que aquí estoy, prometiendo ser tu compañero en cada aventura, contigo, cada día es un regalo, y te amo más de lo que puedo decir."; // Cambia esto por el poema real
-      let index = 0;
-      const intervalId = setInterval(() => {
-        setMostrarPoema((prev) => prev + poema.charAt(index));
-        index++;
-        if (index === poema.length) {
-          clearInterval(intervalId);
-        }
-      }, 100); // Cambia el 100 por el tiempo que desees entre letras
-      return () => clearInterval(intervalId);
-    }
-  }, [coincidencia]);
-
+  const mostrarPoemaProgresivamente = (poema) => {
+    let i = 0;
+    const intervalo = setInterval(() => {
+      setMostrarPoema((prev) => prev + poema[i]);
+      i++;
+      if (i >= poema.length) {
+        clearInterval(intervalo);
+      }
+    }, 100); // Ajustar velocidad de aparición de las letras
+  };
 
   return (
     <div className='audio-recorder'>
@@ -106,16 +129,12 @@ const AudioRecorder = () => {
         <div>
           <h3>Transcripción:</h3>
           <p>{transcription}</p>
-          {
-            coincidencia &&
-            <div>
-              <p>Adivinaste! Ahora podras ver mi poema oculto:</p>
-              <p className="typing-effect">{mostrarPoema}</p>
-            </div> 
-          }
-          {
-            !coincidencia && <p>No adivinaste, piensa mejor.</p>
-          }
+          {coincidencia && (
+            <div className={`poema-container ${mostrarContenedor ? 'visible' : ''}`}>
+              <p>Adivinaste! Ahora podrás ver mi poema oculto:</p>
+              <p>{mostrarPoema}</p>
+            </div>
+          )}
         </div>
       )}
     </div>
@@ -123,23 +142,6 @@ const AudioRecorder = () => {
 };
 
 export default AudioRecorder;
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 

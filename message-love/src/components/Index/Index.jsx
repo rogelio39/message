@@ -75,10 +75,10 @@ const Index = () => {
                                     count == 10 && <p>lo que me pasa cuando te tengo cerca, no lo vivi jamas con nadie.</p>
                                 }
                                 {
-                                    count == 11 && <p>asi que ten presente siempre, siempre, que te voy a amar con todo lo que soy</p>
+                                    count == 11 && <p>asi que ten presente siempre, siempre, que te voy a amar con todo lo que soy, jamas lo olvides</p>
                                 }
                                 {
-                                    count == 12 && <p>jamas lo olvides!</p>
+                                    count == 12 && <p>Si yo te digo, after all this time?, que me dirias?</p>
                                 }
 
                             </div>
