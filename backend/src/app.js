@@ -6,7 +6,7 @@ import cors from 'cors';
 
 // Configurar CORS
 const corsOptions = {
-    origin: process.env.LOCAL_URL,
+    origin: process.env.FRONTEND_URL,
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
     credentials: true,
 };
