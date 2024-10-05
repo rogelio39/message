@@ -47,7 +47,7 @@ const AudioRecorder = () => {
   if (speechRecognition) {
     recognition = new speechRecognition();
     recognition.continuous = true;
-    recognition.lang = "es-ES";
+    recognition.lang = "en-US"; // Asegúrate de que sea igual en ambos dispositivos
     recognition.interimResults = false;
   } else {
     alert('La API de SpeechRecognition no está disponible en este navegador.');
