@@ -21,8 +21,7 @@ app.use(express.json());
 // Usar CORS
 app.use(cors(corsOptions));
 
-// Endpoint de prueba
-app.get('/prueba', (req, res) => res.json({ ok: "ok" }));
+
 
 app.post('/api/check-transcription', (req, res) => {
     const { transcription } = req.body;
@@ -31,12 +30,17 @@ app.post('/api/check-transcription', (req, res) => {
         return res.status(400).json({ message: 'Transcripción faltante' });
     }
 
-    // Aquí puedes comparar la transcripción con el juramento almacenado
     const juramentoAlmacenado = "Always";
-    const coincidencia = transcription.trim().toLowerCase() === juramentoAlmacenado.trim().toLowerCase();
+    
+    // Limpiar la transcripción eliminando espacios en blanco adicionales y caracteres especiales
+    const cleanTranscription = transcription.trim().toLowerCase().replace(/[^\w\s]/gi, '');
+    const cleanJuramento = juramentoAlmacenado.trim().toLowerCase().replace(/[^\w\s]/gi, '');
+
+    const coincidencia = cleanTranscription === cleanJuramento;
 
     res.json({ coincidencia });
 });
+
 
 
 
