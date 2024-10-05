@@ -15,7 +15,7 @@ const AudioRecorder = () => {
   const [mostrarContenedor, setMostrarContenedor] = useState(false); // Estado para controlar la visibilidad del contenedor
   const [messageError, setMessageError] = useState()
   const lineasPoema = [
-    "A veces, cuando me miras,",
+    " A veces, cuando me miras,",
     "siento que el mundo se detiene.",
     "Hay algo en tus ojos que me atrapa,",
     "una luz que solo tú enciendes.",
