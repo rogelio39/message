@@ -13,7 +13,7 @@ const AudioRecorder = () => {
   const [isRecording, setIsRecording] = useState(false);
   const [mostrarPoema, setMostrarPoema] = useState(''); // Texto mostrado progresivamente
   const [mostrarContenedor, setMostrarContenedor] = useState(false); // Estado para controlar la visibilidad del contenedor
-
+  const [messageError, setMessageError] = useState()
   const lineasPoema = [
     "A veces, cuando me miras,",
     "siento que el mundo se detiene.",
@@ -86,6 +86,11 @@ const AudioRecorder = () => {
       return;
     }
 
+
+    // Reiniciar el mensaje de error antes de enviar
+    setMessageError(null);
+
+
     try {
       const response = await fetch(`${URLWEB}/api/check-transcription`, {
         method: 'POST',
@@ -105,9 +110,12 @@ const AudioRecorder = () => {
       if (result.coincidencia) {
         setMostrarContenedor(true); // Hacemos visible el contenedor
         mostrarPoemaProgresivamente(lineasPoema); // Mostramos el poema progresivamente
-      } 
+      } else if (result.coincidencia == false) {
+        setMessageError('Vuelve a intentarlo, no adivinaste')
+      }
     } catch (error) {
       console.error('Error al enviar la transcripción:', error);
+      setMessageError('Hubo un error al procesar la transcripción.');
     }
   };
 
@@ -136,7 +144,7 @@ const AudioRecorder = () => {
               <p>Adivinaste! Ahora podrás ver mi poema oculto:</p>
               <p>{mostrarPoema}</p>
             </div>
-          ) : <div>No adivinaste, vuelve a intentarlo</div>} 
+          ) : <div>{messageError}</div>}
         </div>
       )}
     </div>
