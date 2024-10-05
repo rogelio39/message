@@ -4,6 +4,8 @@ import express from 'express';
 import cors from 'cors';
 
 
+
+
 // Configurar CORS
 const corsOptions = {
     origin: process.env.FRONTEND_URL,
@@ -25,6 +27,7 @@ app.get('/prueba', (req, res) => res.json({ ok: "ok" }));
 app.post('/api/check-transcription', (req, res) => {
     const { transcription } = req.body;
 
+    console.log("transcriptin back", transcription)
     if (!transcription) {
         return res.status(400).json({ message: 'Transcripción faltante' });
     }

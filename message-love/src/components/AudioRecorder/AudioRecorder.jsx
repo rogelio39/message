@@ -5,6 +5,8 @@ const URLWEB = import.meta.env.VITE_REACT_APP_MODE === 'DEV'
   ? import.meta.env.VITE_REACT_APP_LOCAL_URL
   : import.meta.env.VITE_REACT_APP_WEB_URL;
 
+  console.log("url front", URLWEB)
+
 const AudioRecorder = () => {
   const [transcription, setTranscription] = useState('');
   const [coincidencia, setCoincidencia] = useState();
@@ -103,7 +105,7 @@ const AudioRecorder = () => {
       if (result.coincidencia) {
         setMostrarContenedor(true); // Hacemos visible el contenedor
         mostrarPoemaProgresivamente(lineasPoema); // Mostramos el poema progresivamente
-      }
+      } 
     } catch (error) {
       console.error('Error al enviar la transcripción:', error);
     }
@@ -129,12 +131,12 @@ const AudioRecorder = () => {
         <div>
           <h3>Transcripción:</h3>
           <p>{transcription}</p>
-          {coincidencia && (
+          {coincidencia ? (
             <div className={`poema-container ${mostrarContenedor ? 'visible' : ''}`}>
               <p>Adivinaste! Ahora podrás ver mi poema oculto:</p>
               <p>{mostrarPoema}</p>
             </div>
-          )}
+          ) : <div>No adivinaste, vuelve a intentarlo</div>} 
         </div>
       )}
     </div>
