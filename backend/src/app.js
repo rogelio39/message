@@ -27,13 +27,12 @@ app.get('/prueba', (req, res) => res.json({ ok: "ok" }));
 app.post('/api/check-transcription', (req, res) => {
     const { transcription } = req.body;
 
-    console.log("transcriptin back", transcription)
     if (!transcription) {
         return res.status(400).json({ message: 'Transcripción faltante' });
     }
 
     // Aquí puedes comparar la transcripción con el juramento almacenado
-    const juramentoAlmacenado = "Always.";
+    const juramentoAlmacenado = "Always";
     const coincidencia = transcription.trim().toLowerCase() === juramentoAlmacenado.trim().toLowerCase();
 
     res.json({ coincidencia });

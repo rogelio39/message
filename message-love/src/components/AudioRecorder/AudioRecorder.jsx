@@ -5,7 +5,7 @@ const URLWEB = import.meta.env.VITE_REACT_APP_MODE === 'DEV'
   ? import.meta.env.VITE_REACT_APP_LOCAL_URL
   : import.meta.env.VITE_REACT_APP_WEB_URL;
 
-  console.log("url front", URLWEB)
+
 
 const AudioRecorder = () => {
   const [transcription, setTranscription] = useState('');
