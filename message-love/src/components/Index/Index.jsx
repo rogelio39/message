@@ -1,5 +1,6 @@
 import { useState } from "react";
 import './index.css'
+import AudioRecorder from "../AudioRecorder/AudioRecorder";
 const Index = () => {
 
     const [firstResponse, setFirstResponse] = useState(null);
@@ -107,12 +108,11 @@ const Index = () => {
 
 
                             </div>
+
                         }
                     </div>
             }
-            {
-
-            }
+            <AudioRecorder/>
         </div>
     )
 }

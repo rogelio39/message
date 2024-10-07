@@ -121,14 +121,16 @@ const AudioRecorder = () => {
 
   const mostrarPoemaProgresivamente = (poema) => {
     let i = 0;
+    setMostrarPoema(''); // Asegurarse de empezar con un string vacío
     const intervalo = setInterval(() => {
-      setMostrarPoema((prev) => prev + poema[i]);
-      i++;
-      if (i >= poema.length) {
-        clearInterval(intervalo);
-      }
+        setMostrarPoema((prev) => prev + poema[i]); // Concatenar con el estado previo
+        i++;
+        if (i >= poema.length) {
+            clearInterval(intervalo); // Detener el intervalo cuando se completa
+        }
     }, 100); // Ajustar velocidad de aparición de las letras
-  };
+};
+
 
   return (
     <div className='audio-recorder'>

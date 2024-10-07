@@ -1,7 +1,9 @@
 
 import './App.css'
 import Index from './components/Index/Index'
-import AudioRecorder from './components/AudioRecorder/AudioRecorder'
+
+import {BrowserRouter, Routes, Route} from 'react-router-dom';
+import Songs from './components/Songs/Songs';
 
 function App() {
 
@@ -9,8 +11,14 @@ function App() {
 
   return(
     <div className='main-container'>
-    <Index/>
-    <AudioRecorder/>
+      <BrowserRouter>
+      
+        <Routes>
+          <Route path='/*' element={<Index/>} />
+          <Route path='/rememberYou' element = {<Songs/>}/>
+
+        </Routes>
+      </BrowserRouter>
     </div>
   )
 
