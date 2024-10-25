@@ -13,7 +13,7 @@ const Songs = () => {
                 Cuando me hablas bonito. Cuando me dices cosas lindas. Cuando me subes y presumes en tus historias.
                 Cuando me dedicas estados y canciones tan hermosas, me siento como en medio de una galaxia. Por si no tienes idea como es, es asi.
             </p>
-            <p>https://scitechdaily.com/images/Universe-Expansion-Concept.gif</p>
+            <img src="https://revista-urbana.nyc3.cdn.digitaloceanspaces.com/Universe-Expansion-Concept.webp"></img>
             <p>
                y de verdad que cuando subes una foto de nosotros, con palabras tan lindas, o canciones que son tan hermosas. Mi corazon se estremece.
 
